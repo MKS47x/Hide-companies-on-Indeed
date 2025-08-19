@@ -1,0 +1,107 @@
+// ==UserScript==
+// @name         Hide Scammy Companies on Indeed
+// @namespace    http://tampermonkey.net/
+// @version      1.0
+// @description  Hide known scammy or shady company listings on Indeed.com
+// @author       You
+// @match        https://*.indeed.com/*
+// @grant        none
+// ==/UserScript==
+
+(function() {
+    'use strict';
+
+    // List of known scammy or sketchy companies (add more as needed)
+    const scamCompanies = [
+        'DataAnnotation',
+        'TELUS International',
+        'Remotasks',
+        'Appen',
+        'Clickworker',
+        'Teemwork.ai',
+        'Lionbridge',
+        'OneForma',
+        'iSoftStone',
+        'SmartCrowd',
+        'RWS',
+        'Pactera',
+        'Leapforce',
+        'Outlier.ai',
+        'Amazon MTurk',
+        'TaskRabbit',
+        'Toloka',
+        'Neevo',
+        'Microworkers',
+        'TranscribeMe',
+        'Scribie',
+        'Rev.com',
+        'WorkMarket',
+        'Revature',
+        'LiveOps',
+        'Working Solutions',
+        'ModSquad',
+        'TTEC',
+        'Transcription Outsourcing, LLC',
+        'TaskUs',
+        'CrowdFlower',
+        'SigTrack',
+        'Xerox',
+        'Survey Junkie',
+        'Branded Surveys',
+        'Prolific',
+        'Humanatic',
+        'VirtualBee',
+        'Apex Focus Group',
+        'FusionZone',
+        'Freelancer.com',
+        'Guru',
+        'Toptal',
+        'Workhoppers',
+        // WITCH Companies (India-based IT outsourcing services, flagged for being sketchy or exploitative)
+        'Cognizant',
+        'Infosys',
+        'Wipro',
+        'Tata Consultancy Services',
+        'Tech Mahindra',
+        'HCL Technologies',
+        'Zensar Technologies',
+        'Mindtree',
+        'Larsen & Toubro Infotech',
+        'Hexaware Technologies',
+        'Syntel',
+        'Mphasis',
+        'Capgemini',
+        'Persistent Systems',
+        'Birlasoft',
+        'Quess Corp',
+        'Fujitsu India'
+    ];
+
+    // Function to hide job cards
+    function hideScamJobs() {
+        const jobCards = document.querySelectorAll('.job_seen_beacon');
+
+        jobCards.forEach(card => {
+            const text = card.innerText.toLowerCase();
+            for (const scam of scamCompanies) {
+                if (text.includes(scam.toLowerCase())) {
+                    card.style.display = 'none';
+                    break; // No need to check more once it's hidden
+                }
+            }
+        });
+    }
+
+    // Observe DOM changes (Indeed loads jobs dynamically)
+    const observer = new MutationObserver(() => {
+        hideScamJobs();
+    });
+
+    observer.observe(document.body, {
+        childList: true,
+        subtree: true
+    });
+
+    // Initial call (for content already loaded)
+    hideScamJobs();
+})();
